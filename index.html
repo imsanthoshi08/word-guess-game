@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <title>Word Guess Game</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+
+    body {
+
+      font-family: Arial;
+
+      text-align: center;
+
+      background: #e8f4ff;
+
+      padding: 40px 10px;
+
+    }
+
+    .game {
+
+      background: white;
+
+      padding: 25px;
+
+      border-radius: 15px;
+
+      max-width: 350px;
+
+      margin: auto;
+
+    }
+
+    input, button {
+
+      padding: 10px;
+
+      margin: 6px;
+
+      font-size: 16px;
+
+    }
+
+    button {
+
+      background: #2878d0;
+
+      color: white;
+
+      border: none;
+
+      border-radius: 6px;
+
+      cursor: pointer;
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div class="game">
+
+    <h1>Word Guess Game</h1>
+
+    <p>Guess the hidden word!</p>
+
+    <p id="hint">Hint: A fruit</p>
+
+    <p id="display">_ _ _ _ _</p>
+
+    <input id="guess" placeholder="Enter a letter" maxlength="1">
+
+    <br>
+
+    <button onclick="check()">Guess</button>
+
+    <p id="message"></p>
+
+    <p>Attempts left: <span id="attempts">6</span></p>
+
+    <button onclick="restart()">New Game</button>
+
+  </div>
+
+  <script>
+
+    const words = [
+
+      {word:"APPLE", hint:"A fruit"},
+
+      {word:"TIGER", hint:"A wild animal"},
+
+      {word:"CHAIR", hint:"You sit on it"},
+
+      {word:"BREAD", hint:"A food"}
+
+    ];
+
+    let answer, guessed, tries;
+
+    function restart() {
+
+      const item = words[Math.floor(Math.random() * words.length)];
+
+      answer = item.word;
+
+      guessed = [];
+
+      tries = 6;
+
+      document.getElementById("hint").textContent = "Hint: " + item.hint;
+
+      document.getElementById("message").textContent = "";
+
+      document.getElementById("attempts").textContent = tries;
+
+      document.getElementById("guess").value = "";
+
+      showWord();
+
+    }
+
+    function showWord() {
+
+      document.getElementById("display").textContent =
+
+        answer.split("").map(c => guessed.includes(c) ? c : "_").join(" ");
+
+    }
+
+    function check() {
+
+      const input = document.getElementById("guess");
+
+      const letter = input.value.trim().toUpperCase();
+
+      input.value = "";
+
+      if (!letter || !/^[A-Z]$/.test(letter)) {
+
+        document.getElementById("message").textContent = "Enter one letter!";
+
+        return;
+
+      }
+
+      if (guessed.includes(letter)) {
+
+        document.getElementById("message").textContent = "Already guessed!";
+
+        return;
+
+      }
+
+      guessed.push(letter);
+
+      if (!answer.includes(letter)) tries--;
+
+      showWord();
+
+      document.getElementById("attempts").textContent = tries;
+
+      if (answer.split("").every(c => guessed.includes(c))) {
+
+        document.getElementById("message").textContent = "You won! 🎉";
+
+      } else if (tries === 0) {
+
+        document.getElementById("message").textContent = "Game over! Word: " + answer;
+
+      } else {
+
+        document.getElementById("message").textContent =
+
+          answer.includes(letter) ? "Correct letter!" : "Wrong letter!";
+
+      }
+
+    }
+
+    restart();
+
+  </script>
+
+</body>
+
+</html>
